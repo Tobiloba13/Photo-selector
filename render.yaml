@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: photo-selector-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free                  # upgrade to starter ($7/mo) for always-on
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000
