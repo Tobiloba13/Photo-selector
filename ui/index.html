@@ -284,7 +284,7 @@ input:focus{border-color:var(--accent)}
 <div id="app-shell" style="display:none">
   <div class="layout">
     <aside>
-      <div>
+      <div id="api-section" style="display:none">
         <span class="s-label">API endpoint</span>
         <input type="url" id="api-url" placeholder="https://your-api.railway.app">
         <div class="api-status"><div class="dot gray" id="dot"></div><span id="status-text">Not connected</span></div>
@@ -649,17 +649,24 @@ function signInUser(user){
   enterApp();
 }
 
+const HARDCODED_API='https://web-production-8c393.up.railway.app';
+
 function enterApp(){
   document.getElementById('auth-screen').innerHTML='';
   document.getElementById('app-shell').style.display='block';
   document.getElementById('main-nav').style.display='flex';
   document.getElementById('bot-launcher').style.display='flex';
 
-  // Update header
   document.getElementById('user-avatar').textContent=currentUser.avatar||'?';
   document.getElementById('user-label').textContent=currentUser.isAdmin?'Admin':currentUser.name.split(' ')[0];
   const showUpgrade=!currentUser.isAdmin&&!currentUser.isPro;
   document.getElementById('upgrade-btn').style.display=showUpgrade?'':'none';
+
+  const apiInput=document.getElementById('api-url');
+  apiInput.value=HARDCODED_API;
+  const apiSection=document.getElementById('api-section');
+  if(currentUser.isAdmin){apiSection.style.display='block';}
+  else{apiSection.style.display='none';}
 
   updateTrialBanner();
   buildSocialGrid();
@@ -667,6 +674,7 @@ function enterApp(){
   setupSliders();
   setupFileInput();
   setupAPI();
+  checkApi();
 }
 
 function goHome(){if(currentUser)switchTab('photos',document.querySelector('.nav-tab'));}
@@ -1045,15 +1053,21 @@ function showPayment(plan){
 }
 
 function handlePayment(provider){
-  toast(`Redirecting to ${provider}…`);
-  setTimeout(()=>{
-    if(currentUser){currentUser.isPro=true;saveUser(currentUser);}
-    document.getElementById('upgrade-btn').style.display='none';
-    document.getElementById('user-label').textContent=(currentUser?.name?.split(' ')[0]||'User')+' ✦';
-    document.getElementById('trial-banner').classList.add('hidden');
-    toast('Pro unlocked! All features available.');
-    switchTab('photos',document.querySelector('.nav-tab'));
-  },1500);
+  // Payment integration coming soon — real Stripe/PayPal/Flutterwave processing
+  const section = document.getElementById('payment-section');
+  section.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;text-align:center;margin-top:1rem">
+      <div style="font-size:28px;margin-bottom:.75rem">🔒</div>
+      <p style="font-size:15px;font-weight:600;margin-bottom:.5rem">Payment coming soon</p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:1rem">
+        We are finalising our secure payment integration with ${provider}.<br>
+        You will be notified as soon as it goes live.
+      </p>
+      <p style="font-size:12px;color:var(--muted)">
+        In the meantime your <strong style="color:var(--purple)">30-day free trial</strong> gives you full Pro access.<br>
+        Questions? Chat with <strong>Vispick Support</strong> below.
+      </p>
+    </div>`;
 }
 
 // ═══════════════════════════════════════════════════════
