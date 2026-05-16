@@ -608,8 +608,20 @@ function verifyOTP(){
 }
 
 function oauthSignIn(provider){
-  const names={Google:'Google User',Apple:'Apple User'};
-  signInUser({name:names[provider],email:`user@${provider.toLowerCase()}.com`,avatar:provider[0],isAdmin:false,isPro:false,trialStart:new Date().toISOString()});
+  const screen=document.getElementById('auth-screen');
+  screen.innerHTML=`
+    <div class="auth-screen">
+      <div class="auth-card" style="text-align:center">
+        <div style="font-size:32px;margin-bottom:1rem">${provider==='Google'?'🔵':provider==='Apple'?'⚫':'📱'}</div>
+        <p style="font-size:15px;font-weight:600;margin-bottom:.5rem">Connecting with ${provider}</p>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:1.5rem">Verifying your account…</p>
+        <div style="display:flex;justify-content:center"><span class="spinner" style="width:20px;height:20px;border-width:3px"></span></div>
+      </div>
+    </div>`;
+  const names={Google:'Google User',Apple:'Apple User',Phone:'Phone User'};
+  setTimeout(()=>{
+    signInUser({name:names[provider]||provider+' User',email:`user@${provider.toLowerCase()}.com`,avatar:provider[0],isAdmin:false,isPro:false,trialStart:new Date().toISOString()});
+  },2000);
 }
 
 function doSignUp(){
@@ -1006,7 +1018,7 @@ function renderPricingTab(){
             <li>Social platform guide</li>
           </ul>
         </div>
-        <div class="plan-card popular clickable" onclick="showPayment('monthly')">
+        <div class="plan-card popular">
           <div class="popular-badge">Most popular</div>
           <p style="font-size:12px;color:var(--purple);font-weight:500">PRO MONTHLY</p>
           <div class="plan-price">${sym}${p.monthly.toLocaleString()}<span>/mo</span></div>
@@ -1017,9 +1029,9 @@ function renderPricingTab(){
             <li>All social platforms</li>
             <li>Priority support</li>
           </ul>
-          <button class="btn-primary" style="margin-top:1rem;font-size:13px">Get Pro Monthly</button>
+          <button class="btn-primary" style="margin-top:1rem;font-size:13px;opacity:.5;cursor:default">Coming Soon</button>
         </div>
-        <div class="plan-card clickable" onclick="showPayment('yearly')">
+        <div class="plan-card">
           <p style="font-size:12px;color:var(--teal);font-weight:500">PRO YEARLY</p>
           <div class="plan-price">${sym}${p.yearly.toLocaleString()}<span>/yr</span></div>
           <p style="font-size:11px;color:var(--teal);margin-bottom:.5rem">Save ${currency==='USD'?'27%':'29%'}</p>
@@ -1028,7 +1040,7 @@ function renderPricingTab(){
             <li>2 months free</li>
             <li>Early feature access</li>
           </ul>
-          <button class="btn-primary" style="margin-top:1rem;font-size:13px;background:var(--teal)">Get Pro Yearly</button>
+          <button class="btn-primary" style="margin-top:1rem;font-size:13px;background:var(--teal);opacity:.5;cursor:default">Coming Soon</button>
         </div>
       </div>
       <div id="payment-section"></div>
@@ -1043,12 +1055,18 @@ function showPayment(plan){
   document.getElementById('payment-section').innerHTML=`
     <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:1.25rem;text-align:left">
       <p style="font-size:14px;font-weight:500;margin-bottom:1rem">Pay ${sym}${p[plan].toLocaleString()} · ${plan}</p>
-      <div class="payment-methods">
-        <button class="pay-btn stripe" onclick="handlePayment('Stripe')">💳 Pay with Card (Stripe)</button>
-        <button class="pay-btn paypal" onclick="handlePayment('PayPal')">🅿 Pay with PayPal</button>
-        <button class="pay-btn flutterwave" onclick="handlePayment('Flutterwave')">🦋 Pay with Flutterwave ${currency==='NGN'?'(NGN)':''}</button>
+      <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:1.25rem;text-align:center">
+        <div style="font-size:24px;margin-bottom:.75rem">🔒</div>
+        <p style="font-size:14px;font-weight:600;margin-bottom:.5rem">Payment coming soon</p>
+        <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:.75rem">
+          We are finalising secure payment integration with Stripe, PayPal and Flutterwave.<br>
+          You will be notified as soon as it goes live.
+        </p>
+        <p style="font-size:12px;color:var(--muted)">
+          Your <strong style="color:var(--purple)">30-day free trial</strong> gives you full Pro access in the meantime.<br>
+          Questions? Chat with <strong>Vispick Support</strong> below.
+        </p>
       </div>
-      <p style="font-size:11px;color:var(--muted);text-align:center">Secure · Cancel anytime · Instant access</p>
     </div>`;
 }
 
