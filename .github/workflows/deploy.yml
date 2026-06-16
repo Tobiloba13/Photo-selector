@@ -24,6 +24,7 @@ jobs:
 
       - name: Run tests
         run: pytest tests/ -v
+        working-directory: ${{ github.workspace }}
 
   # ── Deploy API to Railway on merge to main ──────────────────────────────
   deploy-railway:
